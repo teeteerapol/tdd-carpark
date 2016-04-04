@@ -10,12 +10,20 @@ namespace CarPark.Models
     {
         public DateTime DateIn { get; set; }
         public DateTime? DateOut { get; set; }
-        public decimal ParkingFee
+        public decimal? ParkingFee
         {
             get
             {
+                if (this.DateOut == null)
+                {
+                    return null;
+                }
+
+                if (this.DateOut.Value < this.DateIn)
+                    throw new Exception("Invalid date");
+
                 var fee = 0m;
-                TimeSpan diff = this.DateOut.GetValueOrDefault() - this.DateIn;
+                TimeSpan diff = this.DateOut.Value - this.DateIn;
 
                 if ((diff.TotalMinutes > 15) && (diff.TotalHours <= 3.25))
                 {
